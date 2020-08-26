@@ -1,0 +1,286 @@
+{UTF-8}
+contacts=
+	IF THEN ELSE(Time<Day of starting 1st ld, Infected*contacts rate , IF THEN ELSE(Time\
+		>=Day of starting 1st ld:AND:Time<=Day of ending 1st ld, Infected*contacts rate*ld efficiency\
+		 , IF THEN ELSE(Time>=Day of starting 2nd ld:AND:Time<=Day of ending 2nd ld, Infected\
+		*contacts rate*smart ld efficiency , Infected*contacts rate*Post ld efficiency ) ) \
+		)
+	~	people
+	~		|
+
+contacts rate=
+	70
+	~	Dmnl
+	~		|
+
+contacts with infected=
+	contacts*Fraction of people Susceptible
+	~	people
+	~		|
+
+Day of ending 1st ld=
+	65
+	~	Day
+	~		|
+
+Day of ending 2nd ld=
+	106
+	~	Day
+	~		|
+
+Day of starting 1st ld=
+	25
+	~	Day
+	~		|
+
+Day of starting 2nd ld=
+	66
+	~	Day
+	~		|
+
+Deaths= INTEG (
+	Dying rate,
+		0)
+	~	people
+	~		|
+
+Disease duration=
+	14
+	~	Day
+	~		|
+
+Dying rate=
+	(Infected/Disease duration)*Fatality rate
+	~	people/Day
+	~		|
+
+Fatality rate=
+	IF THEN ELSE("hospital cap. strain index"<5, 0.03 , IF THEN ELSE("hospital cap. strain index"\
+		>=5:AND:"hospital cap. strain index"<30, 0.07 , 0.1 ) )
+	~	Dmnl
+	~		|
+
+Fraction of people Susceptible=
+	Susceptible/Total population
+	~	Dmnl
+	~		|
+
+Fraction require hospitalisation=
+	0.13
+	~	Dmnl
+	~		|
+
+"hospital cap. strain index"=
+	serious cases/hospital capacity
+	~	people/Beds
+	~		|
+
+hospital capacity=
+	2e+06
+	~	Beds
+	~		|
+
+Incubation time=
+	5
+	~	Day
+	~		|
+
+Infected= INTEG (
+	Infecting rate-Dying rate-Recovering rate,
+		200)
+	~	people
+	~		|
+
+Infecting rate=
+	(Infectivity*contacts with infected)/Incubation time
+	~	people/Day
+	~		|
+
+Infectivity=
+	0.025
+	~	Dmnl
+	~		|
+
+ld efficiency=
+	0.1
+	~	Dmnl
+	~		|
+
+Post ld efficiency=
+	0.5
+	~	Dmnl
+	~		|
+
+Recovered= INTEG (
+	Recovering rate,
+		0)
+	~	people
+	~		|
+
+Recovering rate=
+	(Infected/Disease duration)*(1-Fatality rate)
+	~	people/Day
+	~		|
+
+serious cases=
+	Infected*Fraction require hospitalisation
+	~	people
+	~		|
+
+smart ld efficiency=
+	0.25
+	~	Dmnl
+	~		|
+
+Susceptible= INTEG (
+	-Infecting rate,
+		6e+08)
+	~	people
+	~		|
+
+Total population=
+	1.2e+09
+	~	people
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 180
+	~	Day
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Day
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Day [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Day [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,90,0
+10,1,Susceptible,412,433,56,43,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,2,Infected,658,436,54,44,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,3,Recovered,1055,328,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,4,Deaths,1054,564,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,6,8,2,4,0,0,22,0,0,0,-1--1--1,,1|(572,447)|
+1,7,8,1,100,0,0,22,0,0,0,-1--1--1,,1|(498,447)|
+11,8,0,535,447,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,9,Infecting rate,535,466,41,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,13,3,4,0,0,22,0,0,0,-1--1--1,,1|(1055,403)|
+1,12,13,2,100,0,0,22,0,0,0,-1--1--1,,1|(818,403)|
+11,13,0,931,403,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,14,Recovering rate,931,422,64,11,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,18,4,4,0,0,22,0,0,0,-1--1--1,,1|(1054,454)|
+1,17,18,2,100,0,0,22,0,0,0,-1--1--1,,1|(815,454)|
+11,18,0,925,454,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,19,Dying rate,925,473,33,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,20,Total population,245,459,51,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,21,Fraction of people Susceptible,241,367,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,22,20,21,1,0,0,0,0,64,0,-1--1--1,,1|(227,420)|
+1,23,1,21,0,0,0,0,0,64,0,-1--1--1,,1|(329,401)|
+10,24,contacts with infected,374,307,42,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,25,21,24,0,0,0,0,0,64,0,-1--1--1,,1|(301,339)|
+10,26,contacts,492,235,27,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,27,Infectivity,528,331,31,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,28,contacts rate,677,202,41,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,29,Incubation time,402,555,48,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,30,29,9,0,0,0,0,0,64,0,-1--1--1,,1|(462,514)|
+1,31,27,9,1,0,0,0,0,64,0,-1--1--1,,1|(556,378)|
+1,32,24,9,1,0,0,0,0,64,0,-1--1--1,,1|(466,361)|
+1,33,26,24,0,0,0,0,0,64,0,-1--1--1,,1|(445,263)|
+1,34,2,26,0,0,0,0,0,64,0,-1--1--1,,1|(565,324)|
+1,35,28,26,0,0,0,0,0,64,0,-1--1--1,,1|(584,218)|
+10,36,Time,476,290,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|0||128-128-128,0,0,0,0,0,0
+1,37,36,26,0,0,0,0,0,64,0,-1--1--1,,1|(481,269)|
+10,38,Fatality rate,1139,427,38,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,39,38,14,0,0,0,0,0,64,0,-1--1--1,,1|(1054,425)|
+1,40,38,19,1,0,0,0,0,64,0,-1--1--1,,1|(1032,438)|
+10,41,Fraction require hospitalisation,503,604,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,42,serious cases,653,590,42,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,43,"hospital cap. strain index",811,580,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,44,hospital capacity,963,622,52,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,45,44,43,0,0,0,0,0,64,0,-1--1--1,,1|(903,605)|
+1,46,43,38,0,0,0,0,0,64,0,-1--1--1,,1|(976,502)|
+1,47,42,43,0,0,0,0,0,64,0,-1--1--1,,1|(716,586)|
+1,48,41,42,0,0,0,0,0,64,0,-1--1--1,,1|(575,597)|
+1,49,2,42,0,0,0,0,0,64,0,-1--1--1,,1|(655,522)|
+1,50,2,19,1,0,0,0,0,64,0,-1--1--1,,1|(779,500)|
+1,51,2,14,1,0,0,0,0,64,0,-1--1--1,,1|(778,345)|
+10,52,Disease duration,886,289,52,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,53,52,13,0,0,0,0,0,64,0,-1--1--1,,1|(906,341)|
+1,54,52,19,1,0,0,0,0,64,0,-1--1--1,,1|(849,366)|
+10,55,Day of starting 1st ld,159,296,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,56,Day of ending 1st ld,131,232,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,57,Day of starting 2nd ld,134,168,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,58,Day of ending 2nd ld,175,115,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,59,ld efficiency,277,91,38,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,60,smart ld efficiency,406,87,56,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,61,Post ld efficiency,496,124,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,62,55,26,0,0,0,0,0,64,0,-1--1--1,,1|(328,264)|
+1,63,56,26,0,0,0,0,0,64,0,-1--1--1,,1|(313,232)|
+1,64,57,26,0,0,0,0,0,64,0,-1--1--1,,1|(316,201)|
+1,65,58,26,0,0,0,0,0,64,0,-1--1--1,,1|(335,175)|
+1,66,59,26,0,0,0,0,0,64,0,-1--1--1,,1|(378,159)|
+1,67,60,26,0,0,0,0,0,64,0,-1--1--1,,1|(444,154)|
+1,68,61,26,0,0,0,0,0,64,0,-1--1--1,,1|(494,172)|
+///---\\\
+:GRAPH GRAPH
+:TITLE  
+:X-AXIS Time
+:X-MIN 0
+:X-MAX 150
+:SCALE
+:VAR Infected
+:SCALE
+:VAR Deaths
+:SCALE
+:VAR Recovered
+:SCALE
+:VAR "hospital cap. strain index"
+:L<%^E!@
+1:Current.vdfx
+9:Current
+23:0
+15:0,0,0,0,0,0
+19:90,0
+27:0,
+34:0,
+4:Time
+5:Infected
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:4
+41:0
+42:1
+72:0
+73:0
+76:0
+77:0
+78:0
+79:0
+80:0
+81:0
+24:0
+25:180
+26:180
+75:
+43:
